@@ -265,8 +265,9 @@ public class InformationBoardServiceImplement implements InformationBoardService
             informationCommentRepository.findByInformationBoardNumber(informationBoardNumber);
             List<InformationHeartEntity> informationHeartEntities = 
             informationHeartRepository.findByInformationBoardNumber(informationBoardNumber);
+            List<String> heartList = informationHeartRepository.findByInformationBoardNumberToUserNumber(informationBoardNumber);
 
-            body = new GetInformationBoardResponseDto(informationBoardEntity, userEntity, informationCommentEntities, informationHeartEntities);
+            body = new GetInformationBoardResponseDto(informationBoardEntity, userEntity, informationCommentEntities, informationHeartEntities, heartList);
 
         } catch (Exception exception){
             exception.printStackTrace();

@@ -8,7 +8,6 @@ public interface RecruitBoardListResultSet {
     public String getRecruitBoardContent();
     public String getRecruitBoardImageUrl();
     public String getWriteDatetime();
-    public String getUpdateDatetime();
     public String getWriterEmail();
     public String getWriterNickname();
     public String getWriterProfileImageUrl();

@@ -209,10 +209,12 @@ public class UserServiceImplement implements UserService {
             boolean isEqualPassword = passwordEncoder.matches(password,encodedCurrentPassword);
             if(!isEqualPassword) return CustomResponse.passwordMismatch();
 
-            boolean isExistUserNickname = userRepository.existsByUserNickname(userNickname);
+            boolean isExistUserNickname =
+                    userRepository.existsByUserNicknameAndUserEmailNot(userNickname,userEmail);
             if(isExistUserNickname) return CustomResponse.existNickname();
 
-            boolean isExistPhoneNumber = userRepository.existsByUserPhoneNumber(userPhoneNumber);
+            boolean isExistPhoneNumber =
+                    userRepository.existsByUserPhoneNumberAndUserEmailNot(userPhoneNumber,userEmail);
             if(isExistPhoneNumber) return CustomResponse.existPhoneNumber();
 
             UserEntity updateUser = new UserEntity(userEntity, dto);

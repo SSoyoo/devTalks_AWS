@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
+import javax.persistence.ManyToOne;
 
 import com.teamproject.devTalks.entity.board.InformationBoardEntity;
 import com.teamproject.devTalks.entity.primaryKey.information.InformationHeartPk;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="InformationHeart")
+@Entity(name="Information_heart")
 @Table(name="InformationHeart")
 @IdClass(InformationHeartPk.class)
 public class InformationHeartEntity {
@@ -29,4 +30,5 @@ public class InformationHeartEntity {
         this.informationBoardNumber = informationBoardEntity.getInformationBoardNumber();
         this.userNumber = userEntity.getUserNumber();
     }
+
 }

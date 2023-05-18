@@ -31,12 +31,10 @@ public class GetRecruitBoardResponseDto extends ResponseDto {
     private int viewCount;
     private List<RecruitComment> commentList;
     private List<RecruitHeart> heartList;
-    private List<String> boardHashTag;
     private boolean recruitmentStatus;
 
     public GetRecruitBoardResponseDto(
-        RecruitBoardEntity recruitBoardEntity, UserEntity userEntity, RecruitBoardHashTagEntity recruitBoardHashTagEntity,
-        List<RecruitCommentEntity> recruitCommentEntities, List<RecruitHeartEntity> recruitHeartEntities
+        RecruitBoardEntity recruitBoardEntity, UserEntity userEntity, List<RecruitCommentEntity> recruitCommentEntities, List<RecruitHeartEntity> recruitHeartEntities
     ) {
         super("SU", "Success");
 
@@ -52,7 +50,6 @@ public class GetRecruitBoardResponseDto extends ResponseDto {
         this.viewCount = recruitBoardEntity.getViewCount();
         this.commentList = RecruitComment.createList(recruitCommentEntities);
         this.heartList = RecruitHeart.createList(recruitHeartEntities);
-        this.boardHashTag = recruitBoardHashTagEntity.getBoardHashTag();
 
     }
 

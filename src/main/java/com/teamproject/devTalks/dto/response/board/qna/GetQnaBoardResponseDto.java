@@ -27,13 +27,15 @@ public class GetQnaBoardResponseDto extends ResponseDto {
     private String writerNickname;
     private String writerProfileImageUrl;
     private List<Comment> commentList;
-    private List<Hashtag> hashtagList;
+    private List<String> hashtagList;
     private int qnaHeartCount;
+    private List<Integer> heartUserNumberList;
+    
     
 
     public GetQnaBoardResponseDto(
             QnaBoardEntity qnaBoardEntity, UserEntity userEntity, List<QnaCommentEntity> qnaCommentEntities,
-            List<QnaBoardHashTagEntity> qnaHashtagEntities, int qnaHeartCount) {
+            List<String> hashStrings, int qnaHeartCount, List<Integer> heartIntegers) {
         super("SU", "Success");
 
         this.qnaBoardNumber = qnaBoardEntity.getQnaBoardNumber();
@@ -45,8 +47,10 @@ public class GetQnaBoardResponseDto extends ResponseDto {
         this.writerNickname = qnaBoardEntity.getWriterNickname();
         this.writerProfileImageUrl = qnaBoardEntity.getWriterProfileImageUrl();
         this.commentList = createQnaCommentList(qnaCommentEntities);
-        this.hashtagList = createQnaBoardHashtagList(qnaHashtagEntities);
+        this.hashtagList = hashStrings;
         this.qnaHeartCount = qnaHeartCount;
+        this.heartUserNumberList = heartIntegers;
+        
     }
 
     @Data
@@ -87,31 +91,27 @@ public class GetQnaBoardResponseDto extends ResponseDto {
         }
         return qnaCommentList;
     }
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    class Hashtag {
 
-        
-        private String boardHashtag;
 
-        public Hashtag(QnaBoardHashTagEntity qnaBoardHashTagEntity){
+    //리스트로 반환될때
+    // @Data
+    // @NoArgsConstructor
+    // @AllArgsConstructor
+    // class Hashtag {
+    //     private String boardHashtag;
+    //     public Hashtag(QnaBoardHashTagEntity qnaBoardHashTagEntity){
             
-            this.boardHashtag = qnaBoardHashTagEntity.getBoardHashtag();
-        }
+    //         this.boardHashtag = qnaBoardHashTagEntity.getBoardHashtag();
+    //     }
+    // }
 
-    }
-
-    private List<Hashtag> createQnaBoardHashtagList(List<QnaBoardHashTagEntity> qnaBoardHashTagEntities) {
+    // private List<Hashtag> createQnaBoardHashtagList(List<QnaBoardHashTagEntity> qnaBoardHashTagEntities) {
         
-        List<Hashtag> qnaBoardHashtagList = new ArrayList<>();
-        for (QnaBoardHashTagEntity qnaHashtags : qnaBoardHashTagEntities){
-            Hashtag qnaHashtag = new Hashtag(qnaHashtags);
-            qnaBoardHashtagList.add(qnaHashtag);
-        }
-
-        return qnaBoardHashtagList;
-
-    }
-
+    //     List<Hashtag> qnaBoardHashtagList = new ArrayList<>();
+    //     for (QnaBoardHashTagEntity qnaHashtags : qnaBoardHashTagEntities){
+    //         Hashtag qnaHashtag = new Hashtag(qnaHashtags);
+    //         qnaBoardHashtagList.add(qnaHashtag);
+    //     }
+    //     return qnaBoardHashtagList;
+    // }
 }

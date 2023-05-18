@@ -1,6 +1,6 @@
 package com.teamproject.devTalks.dto.request.heart.recruit;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostRecruitHeartRequestDto {
 
-    @NotBlank
+    @NotNull
     private int recruitBoardNumber;
 
 }

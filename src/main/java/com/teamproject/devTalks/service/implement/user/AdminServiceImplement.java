@@ -117,10 +117,12 @@ public class AdminServiceImplement implements AdminService {
 
             if(!isEqualPassword) CustomResponse.passwordMismatch();
 
-            boolean isExistNickname = adminRepository.existsByAdminNickname(adminNickname);
+            boolean isExistNickname =
+                    adminRepository.existsByAdminNicknameAndAdminEmailNot(adminNickname,adminEmail);
             if(isExistNickname) return CustomResponse.existNickname();
 
-            boolean isExistPhoneNumber = adminRepository.existsByAdminPhoneNumber(adminPhoneNumber);
+            boolean isExistPhoneNumber =
+                    adminRepository.existsByAdminPhoneNumberAndAdminEmailNot(adminPhoneNumber,adminEmail);
             if(isExistPhoneNumber) return CustomResponse.existPhoneNumber();
 
             AdminEntity updateAdmin = new AdminEntity(adminEntity,dto);

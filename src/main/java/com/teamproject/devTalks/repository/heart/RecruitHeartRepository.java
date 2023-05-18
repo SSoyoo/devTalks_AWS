@@ -16,4 +16,7 @@ public interface RecruitHeartRepository extends JpaRepository<RecruitHeartEntity
 
     @Transactional
     void deleteByRecruitBoardNumber(int recruitBoardNumber);
+
+    @Transactional
+    void deleteByUserNumberAndRecruitBoardNumber(int userNumber, int recruitBoardNumber);
 }

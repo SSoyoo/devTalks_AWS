@@ -4,6 +4,8 @@ import java.nio.file.attribute.UserPrincipal;
 
 import javax.validation.Valid;
 
+import org.apache.catalina.connector.Response;
+import org.apache.tomcat.jni.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.teamproject.devTalks.dto.request.board.recruit.PatchRecruitBoardRequestDto;
 import com.teamproject.devTalks.dto.request.board.recruit.PostRecruitBoardRequestDto;
+import com.teamproject.devTalks.dto.request.comment.recruit.PatchRecruitCommentRequestDto;
+import com.teamproject.devTalks.dto.request.comment.recruit.PostRecruitCommentRequestDto;
+import com.teamproject.devTalks.dto.request.heart.recruit.PostRecruitHeartRequestDto;
 import com.teamproject.devTalks.dto.response.ResponseDto;
 import com.teamproject.devTalks.dto.response.board.recruit.GetRecruitBoardListResponseDto;
 import com.teamproject.devTalks.dto.response.board.recruit.GetRecruitBoardResponseDto;
+import com.teamproject.devTalks.security.AdminPrinciple;
 import com.teamproject.devTalks.security.UserPrinciple;
 import com.teamproject.devTalks.service.board.RecruitBoardService;
 
@@ -63,14 +69,15 @@ public class RecruitBoardController {
     }
 
     // 특정 게시물 수정
-    @PatchMapping("")
+    @PatchMapping("/{recruitBoardNumber}")
     public ResponseEntity<ResponseDto> patchRecruitBoard(
         @Valid @RequestBody PatchRecruitBoardRequestDto requestBody,
-        @AuthenticationPrincipal UserPrinciple userPrinciple
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber
     ) {
         String userEmail = userPrinciple.getUserEmail();
         ResponseEntity<ResponseDto> response = 
-        recruitBoardService.patchRecruitBoard(userEmail, requestBody);
+        recruitBoardService.patchRecruitBoard(userEmail, recruitBoardNumber, requestBody);
         return response;
     }
 
@@ -86,6 +93,92 @@ public class RecruitBoardController {
         return response;
     }
 
+    // 댓글 작성
+    @PostMapping("/{recruitBoardNumber}/comment")
+    public ResponseEntity<ResponseDto> postRecruitComment(
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @Valid @RequestBody PostRecruitCommentRequestDto requestBody,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber
+    ) {
+        String userEmail = userPrinciple.getUserEmail();
+        ResponseEntity<ResponseDto> response = 
+            recruitBoardService.postRecruitComment(userEmail, recruitBoardNumber, requestBody);
+        return response;
+    }
+
+    // 댓글 수정
+    @PatchMapping("/{recruitBoardNumber}/comment/{recruitCommentNumber}")
+    public ResponseEntity<ResponseDto> patchRecruitComment(
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @Valid @RequestBody PatchRecruitCommentRequestDto requestBody,
+        @PathVariable ("recruitBoardNumber") Integer recruitBoardNumber,
+        @PathVariable("recruitCommentNumber") Integer recruitCommentNumber
+    ) {
+        String userEmail = userPrinciple.getUserEmail();
+        ResponseEntity<ResponseDto> response = 
+            recruitBoardService.patchRecruitComment(userEmail, recruitBoardNumber, recruitCommentNumber, requestBody);
+        return response;
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/{recruitBoardNumber}/comment/{recruitCommentNumber}")
+    public ResponseEntity<ResponseDto> deleteRecruitComment(
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber,
+        @PathVariable("recruitCommentNumber") Integer recruitCommentNumber
+    ) {
+        String userEmail = userPrinciple.getUserEmail();
+        ResponseEntity<ResponseDto> response
+            = recruitBoardService.deleteRecruitComment(userEmail, recruitBoardNumber , recruitCommentNumber);
+        return response;
+    }
+
+    // 좋아요 추가
+    @PostMapping("/{recruitBoardNumber}/heart")
+    public ResponseEntity<ResponseDto> postRecruitHeart(
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @Valid @RequestBody PostRecruitHeartRequestDto requestBody,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber
+    ) {
+        String userEmail = userPrinciple.getUserEmail();
+        ResponseEntity<ResponseDto> response 
+            = recruitBoardService.postRecruitHeart(userEmail, recruitBoardNumber, requestBody);
+        return response;
+    }
+
+    // 좋아요 삭제
+    @DeleteMapping("/{recruitBoardNumber}/heart")
+    public ResponseEntity<ResponseDto> deleteRecruitHeart(
+        @AuthenticationPrincipal UserPrinciple userPrinciple,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber
+    ) {
+        String userEmail = userPrinciple.getUserEmail();
+        ResponseEntity<ResponseDto> response = recruitBoardService.deleteRecruitHeart(userEmail, recruitBoardNumber);
+        return response;
+    }
+
+    // 관리자가 게시물 삭제
+    @DeleteMapping("/admin/{recruitBoardNumber}")
+    public ResponseEntity<ResponseDto> deleteAdminRecruitBoard(
+        @AuthenticationPrincipal AdminPrinciple adminPrinciple,
+        @PathVariable("recruitBoardNumber") int recruitBoardNumber
+    ) {
+        String adminEmail = adminPrinciple.getAdminEmail();
+        ResponseEntity<ResponseDto> response = recruitBoardService.deleteRecruitBoard(adminEmail, recruitBoardNumber);
+        return response;
+    }
+
+    // 관리자가 댓글 삭제
+    @DeleteMapping("/admin/{recruitBoardNumber}/comment/{recruitCommentNumber}")
+    public ResponseEntity<ResponseDto> deleteAdminRecruitComment (
+        @AuthenticationPrincipal AdminPrinciple adminPrinciple,
+        @PathVariable("recruitCommentNumber") Integer recruitCommentNumber,
+        @PathVariable("recruitBoardNumber") Integer recruitBoardNumber
+    ) {
+        String adminEmail = adminPrinciple.getAdminEmail();
+        ResponseEntity<ResponseDto> response = recruitBoardService.deleteRecruitComment(adminEmail, recruitBoardNumber, recruitCommentNumber);
+        return response;
+    }
 }
 
     

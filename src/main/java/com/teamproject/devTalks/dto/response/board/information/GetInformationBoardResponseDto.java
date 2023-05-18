@@ -32,10 +32,12 @@ public class GetInformationBoardResponseDto extends ResponseDto {
     private String updateDatetime;
     private List<Comment> commentList;
     private int heartCount;
+    private List<String> heartList;
 
     public GetInformationBoardResponseDto(
         InformationBoardEntity informationBoardEntity, UserEntity userEntity,
-        List<InformationCommentEntity> informationCommentEntities, List<InformationHeartEntity> informationHeartEntities
+        List<InformationCommentEntity> informationCommentEntities, List<InformationHeartEntity> informationHeartEntities,
+        List<String> heartList
         ) {   
 
         super("SU", "Success");
@@ -52,6 +54,7 @@ public class GetInformationBoardResponseDto extends ResponseDto {
         this.writeDatetime = informationBoardEntity.getWriteDatetime();
         this.commentList = createCommentList(informationCommentEntities);
         this.heartCount = getHeartCount(informationHeartEntities);
+        this.heartList = heartList;
    
     }
 

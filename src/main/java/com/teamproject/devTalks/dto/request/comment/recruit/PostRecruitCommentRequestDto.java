@@ -1,6 +1,7 @@
 package com.teamproject.devTalks.dto.request.comment.recruit;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostRecruitCommentRequestDto {
     
-    @NotBlank
+    @NotNull
     private int recruitBoardNumber;
     @NotBlank
     private String recruitCommentContent;

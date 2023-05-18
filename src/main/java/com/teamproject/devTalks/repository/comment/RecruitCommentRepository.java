@@ -17,4 +17,7 @@ public interface RecruitCommentRepository extends JpaRepository<RecruitCommentEn
 
     @Transactional
     void deleteByRecruitBoardNumber(int recruitBoardNumber);
+
+    @Transactional
+    void deleteByRecruitCommentNumber(int recruitCommentNumber);
 }

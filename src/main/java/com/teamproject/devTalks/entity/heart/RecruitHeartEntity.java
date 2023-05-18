@@ -5,7 +5,9 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import com.teamproject.devTalks.entity.board.RecruitBoardEntity;
 import com.teamproject.devTalks.entity.primaryKey.recruit.RecruitHeartPk;
+import com.teamproject.devTalks.entity.user.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +25,9 @@ public class RecruitHeartEntity {
     private int recruitBoardNumber;
     @Id
     private int userNumber;
+
+    public RecruitHeartEntity (UserEntity userEntity, RecruitBoardEntity recruitBoardEntity) {
+        this.recruitBoardNumber = recruitBoardEntity.getRecruitBoardNumber();
+        this.userNumber = userEntity.getUserNumber();
+    }
 }

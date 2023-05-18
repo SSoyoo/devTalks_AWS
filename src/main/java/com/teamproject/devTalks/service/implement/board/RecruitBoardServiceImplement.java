@@ -19,9 +19,8 @@ import com.teamproject.devTalks.dto.response.board.recruit.GetRecruitBoardListRe
 import com.teamproject.devTalks.dto.response.board.recruit.GetRecruitBoardResponseDto;
 import com.teamproject.devTalks.entity.board.RecruitBoardEntity;
 import com.teamproject.devTalks.entity.comment.RecruitCommentEntity;
-import com.teamproject.devTalks.entity.hashTag.RecruitBoardHashTagEntity;
 import com.teamproject.devTalks.entity.heart.RecruitHeartEntity;
-import com.teamproject.devTalks.entity.primaryKey.recruit.RecruitHashtagPk;
+import com.teamproject.devTalks.entity.resultSet.RecruitBoardListResultSet;
 import com.teamproject.devTalks.entity.user.UserEntity;
 import com.teamproject.devTalks.repository.board.RecruitBoardRepository;
 import com.teamproject.devTalks.repository.comment.RecruitCommentRepository;
@@ -30,14 +29,16 @@ import com.teamproject.devTalks.repository.heart.RecruitHeartRepository;
 import com.teamproject.devTalks.repository.user.UserRepository;
 import com.teamproject.devTalks.service.board.RecruitBoardService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class RecruitBoardServiceImplement implements RecruitBoardService {
 
     private UserRepository userRepository;
     private RecruitBoardRepository recruitBoardRepository;
     private RecruitCommentRepository recruitCommentRepository;
     private RecruitHeartRepository recruitHeartRepository;
-    private RecruitBoardHashTagRepository recruitBoardHashTagRepository;
 
     @Autowired
     public RecruitBoardServiceImplement(
@@ -50,7 +51,6 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
         this.recruitBoardRepository = recruitBoardRepository;
         this.recruitCommentRepository = recruitCommentRepository;
         this.recruitHeartRepository = recruitHeartRepository;
-        this.recruitBoardHashTagRepository = recruitBoardHashTagRepository;
     }
 
     
@@ -71,12 +71,12 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
 
             String writerEmail = recruitBoardEntity.getWriterEmail();
             UserEntity userEntity = userRepository.findByUserEmail(writerEmail);
-            // RecruitBoardHashTagEntity recruitBoardHashTagEntity = recruitBoardHashTagRepository.findByHashtag();
+            
             List<RecruitCommentEntity> recruitCommentEntities = recruitCommentRepository.findByRecruitBoardNumber(recruitBoardNumber);
             List<RecruitHeartEntity> recruitHeartEntities = recruitHeartRepository.findByRecruitBoardNumber(recruitBoardNumber);
 
 
-            body = new GetRecruitBoardResponseDto(recruitBoardEntity, userEntity, null, recruitCommentEntities, recruitHeartEntities);
+            body = new GetRecruitBoardResponseDto(recruitBoardEntity, userEntity, recruitCommentEntities, recruitHeartEntities);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -89,8 +89,21 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
     
     @Override
     public ResponseEntity<? super GetRecruitBoardListResponseDto> getRecruitBoardList() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRecruitBoardList'");
+        
+        GetRecruitBoardListResponseDto body = null;
+
+        try {
+
+            List<RecruitBoardListResultSet> resultSet = recruitBoardRepository.getRecruitBoardList();
+            body = new GetRecruitBoardListResponseDto(resultSet);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+
     }
 
     @Override
@@ -99,10 +112,9 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
         try {
             // 존재하지 않는 유저 오류 반환
             UserEntity userEntity = userRepository.findByUserEmail(userEmail);
-            if (userEntity == null)
-                return CustomResponse.noExistUser();
+            if (userEntity == null) return CustomResponse.noExistUser();
 
-            RecruitBoardEntity recruitBoardEntity = new RecruitBoardEntity(userEmail, dto);
+            RecruitBoardEntity recruitBoardEntity = new RecruitBoardEntity(userEntity, dto);
             recruitBoardRepository.save(recruitBoardEntity);
 
         } catch (Exception exception) {
@@ -117,15 +129,16 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> patchRecruitBoard(String userEmail, PatchRecruitBoardRequestDto dto) {
+    public ResponseEntity<ResponseDto> patchRecruitBoard(String userEmail, Integer recruitBoardNumber, PatchRecruitBoardRequestDto dto) {
         
-        int recruitBoardNumber = dto.getRecruitBoardNumber();
         String recruitBoardTitle = dto.getRecruitBoardTitle();
         String recruitBoardContent = dto.getRecruitBoardContent();
         String recruitBoardImageUrl = dto.getRecruitBoardImageUrl();
         
 
         try {
+            if (recruitBoardNumber == null) return CustomResponse.validationFailed();
+
             // 존재하지 않는 게시물 번호
             RecruitBoardEntity recruitBoardEntity = recruitBoardRepository.findByRecruitBoardNumber(recruitBoardNumber);
             if (recruitBoardEntity == null) return CustomResponse.notExistBoardNumber();
@@ -185,7 +198,7 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> postRecruitComment(String userEmail, PostRecruitCommentRequestDto dto) {
+    public ResponseEntity<ResponseDto> postRecruitComment(String userEmail, Integer recruitBoardNumber, PostRecruitCommentRequestDto dto) {
 
         try {
 
@@ -195,7 +208,7 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
 
             //  존재하지 않는 게시물 번호 반환
             RecruitBoardEntity recruitBoardEntity = 
-                recruitBoardRepository.findByRecruitBoardNumber(dto.getRecruitBoardNumber());
+                recruitBoardRepository.findByRecruitBoardNumber(recruitBoardNumber);
             if (recruitBoardEntity == null) return CustomResponse.notExistBoardNumber();
 
             RecruitCommentEntity recruitCommentEntity = 
@@ -211,10 +224,8 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> patchRecruitComment(String userEmail, PatchRecruitCommentRequestDto dto) {
+    public ResponseEntity<ResponseDto> patchRecruitComment(String userEmail, Integer recruitBoardNumber, Integer recruitCommentNumber, PatchRecruitCommentRequestDto dto) {
         
-        int recruitBoardNumber = dto.getRecruitBoardNumber();
-        int recruitCommentNumber = dto.getRecruitCommentNumber();
         String recruitCommentContent = dto.getRecruitCommentContent();
 
         try {
@@ -247,20 +258,82 @@ public class RecruitBoardServiceImplement implements RecruitBoardService {
 
     @Override
     public ResponseEntity<ResponseDto> deleteRecruitComment(String userEmail, Integer recruitBoardNumber, Integer recruitCommentNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteRecruitComment'");
+        
+        try {
+
+            if (recruitBoardNumber == null) return CustomResponse.validationFailed();
+            if (recruitCommentNumber == null) return CustomResponse.validationFailed();
+
+            // 존재하지 않는 보드 넘버
+            RecruitBoardEntity recruitBoardEntity =
+            recruitBoardRepository.findByRecruitBoardNumber(recruitBoardNumber);
+            if(recruitBoardEntity == null) return CustomResponse.notExistBoardNumber();
+
+            // 존재하지 않는 댓글 번호
+            RecruitCommentEntity recruitCommentEntity = 
+            recruitCommentRepository.findByRecruitCommentNumber(recruitCommentNumber);
+            if(recruitCommentEntity == null) return CustomResponse.notExistCommentNumber();
+
+            // 권한 없음
+            boolean equalWriter = recruitCommentEntity.getWriterEmail().equals(userEmail);
+            if (!equalWriter) return CustomResponse.noPermission();
+
+            recruitCommentRepository.deleteByRecruitCommentNumber(recruitCommentNumber);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+        
+        return CustomResponse.success();
+
     }
 
     @Override
-    public ResponseEntity<ResponseDto> postRecruitHeart(String userEmail, PostRecruitHeartRequestDto dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'postRecruitHeart'");
+    public ResponseEntity<ResponseDto> postRecruitHeart(String userEmail, Integer recruitBoardNumber, PostRecruitHeartRequestDto dto) {
+        
+        try {
+
+            // 존재하지 않는 유저 반환
+            UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+            if(userEntity == null) return CustomResponse.noExistUser(); 
+
+            // 존재하지 않는 게시판 번호 반환
+            RecruitBoardEntity recruitBoardEntity =
+                recruitBoardRepository.findByRecruitBoardNumber(recruitBoardNumber);
+            if(recruitBoardEntity == null) return CustomResponse.notExistBoardNumber();
+            
+            RecruitHeartEntity recruitHeartEntity = new RecruitHeartEntity(userEntity, recruitBoardEntity);
+            recruitHeartRepository.save(recruitHeartEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return CustomResponse.success();
+
     }
 
     @Override
     public ResponseEntity<ResponseDto> deleteRecruitHeart(String userEmail, Integer recruitBoardNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteRecruitHeart'");
+        
+        try {
+
+            // 존재하지 않는 유저 이메일
+            UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+            if (userEntity == null) return CustomResponse.noExistUser();
+
+            int userNumber = userEntity.getUserNumber();
+            recruitHeartRepository.deleteByUserNumberAndRecruitBoardNumber(userNumber, recruitBoardNumber);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return CustomResponse.success();
+
     }
 
     

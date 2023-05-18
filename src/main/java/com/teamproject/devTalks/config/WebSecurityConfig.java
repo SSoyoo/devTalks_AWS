@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .antMatchers("/admin/sign-up", "/admin/sign-in").permitAll()
                 .antMatchers("/recommendation/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET, "/information", "/notice/**", "/qna", "/recruit", "/teacher").permitAll()
-                .antMatchers(HttpMethod.POST, "/information",  "/qna", "/recruit", "/teacher").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/information",  "/qna", "/recruit/**", "/teacher").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE, "/information/**", "/qna/**", "/recruit/**", "/teacher/**").hasRole("USER")
                 .antMatchers(HttpMethod.PATCH, "/information/**", "/qna/**", "/recruit/**", "/teacher/**").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/notice/**").hasRole("ADMIN")

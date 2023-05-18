@@ -16,6 +16,9 @@ public interface AdminRepository extends JpaRepository <AdminEntity,Integer>{
     public boolean existsByAdminNickname(String nickname);
     public boolean existsByAdminPhoneNumber(String phoneNumber);
 
+    public boolean existsByAdminNicknameAndAdminEmailNot(String nickname, String email);
+    public boolean existsByAdminPhoneNumberAndAdminEmailNot(String phoneNumber, String email);
+
     @Transactional
     public void deleteByAdminEmail(String AdminEmail);
 }

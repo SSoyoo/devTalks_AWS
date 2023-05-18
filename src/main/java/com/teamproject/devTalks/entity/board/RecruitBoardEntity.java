@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.teamproject.devTalks.dto.request.board.recruit.PostRecruitBoardRequestDto;
+import com.teamproject.devTalks.entity.user.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,14 +36,14 @@ public class RecruitBoardEntity {
     private int viewCount;
     private boolean recruitmentStatus;
 
-    public RecruitBoardEntity(String userEmail, PostRecruitBoardRequestDto dto) {
+    public RecruitBoardEntity(UserEntity userEntity, PostRecruitBoardRequestDto dto) {
         Date now = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String writeDatetime = simpleDateFormat.format(now);
 
-        this.writerProfileImageUrl = getWriterProfileImageUrl();
-        this.writerEmail = getWriterEmail();
-        this.writerNickname = getWriterNickname();
+        this.writerProfileImageUrl = userEntity.getUserProfileImageUrl();
+        this.writerEmail = userEntity.getUserEmail();
+        this.writerNickname = userEntity.getUserNickname();
         this.recruitBoardTitle = dto.getRecruitBoardTitle();
         this.recruitBoardContent = dto.getRecruitBoardContent();
         this.recruitBoardImageUrl = dto.getRecruitBoardImageUrl();

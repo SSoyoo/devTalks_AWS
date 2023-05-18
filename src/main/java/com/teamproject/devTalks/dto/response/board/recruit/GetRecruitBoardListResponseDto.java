@@ -40,7 +40,6 @@ class RecruitBoardSummary {
     private String recruitBoardContent;
     private String recruitBoardImageUrl;
     private String writeDatetime;
-    private String updateDatetime;
     private String writerEmail;
     private String writerNickname;
     private String writerProfileImageUrl;
@@ -55,7 +54,6 @@ class RecruitBoardSummary {
         this.recruitBoardContent = resultSet.getRecruitBoardContent();
         this.recruitBoardImageUrl = resultSet.getRecruitBoardImageUrl();
         this.writeDatetime = resultSet.getWriteDatetime();
-        this.updateDatetime = resultSet.getUpdateDatetime();
         this.writerEmail = resultSet.getWriterEmail();
         this.writerNickname = resultSet.getWriterNickname();
         this.writerProfileImageUrl = resultSet.getWriterProfileImageUrl();
