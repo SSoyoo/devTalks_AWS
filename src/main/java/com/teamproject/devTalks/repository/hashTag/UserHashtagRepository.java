@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface UserHashtagRepository extends JpaRepository<UserHashtagEntity, UserHashTagPk> {
 
-    List<UserHashtagEntity> findAllByUserNumber(int userNumber);
+    List<UserHashtagEntity> findAllByUserNumber(Integer userNumber);
 }

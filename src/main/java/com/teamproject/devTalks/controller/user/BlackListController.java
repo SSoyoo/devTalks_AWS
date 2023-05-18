@@ -32,7 +32,7 @@ public class BlackListController {
 
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public ResponseEntity<? super GetBlackListResponseDto> getBlakList(
             @AuthenticationPrincipal AdminPrinciple adminPrinciple
     ){

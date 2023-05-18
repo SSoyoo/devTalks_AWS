@@ -34,9 +34,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "U.chat_acceptance AS chatAcceptance," +
             "U.created_at AS createdAt," +
             "(SELECT COUNT(*) FROM recommendation R WHERE R.receiver_user_number = U.user_number) AS recommendationCount "+
-            "FROM User U",
+            "FROM user U",
             nativeQuery = true
     )
-
     public List<UserListResultSet> getUserList();
 }

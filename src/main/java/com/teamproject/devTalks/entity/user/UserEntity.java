@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "User")
-@Table(name ="User")
+@Entity(name = "user")
+@Table(name ="user")
 public class UserEntity {
 
     @Id

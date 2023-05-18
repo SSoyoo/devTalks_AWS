@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface RecommendationRepository extends JpaRepository<RecommendationEntity, RecommendationPk> {
 
-   public boolean existsBySenderUserNumberAndReceiverUserNumber(int senderId,int receiverId);
-   public RecommendationEntity findBySenderUserNumberAndReceiverUserNumber(int senderId,int receiverId);
+   public boolean existsBySenderUserNumberAndReceiverUserNumber(Integer senderId,Integer receiverId);
+   public RecommendationEntity findBySenderUserNumberAndReceiverUserNumber(Integer senderId,Integer receiverId);
 
-   public List<RecommendationEntity> findBySenderUserNumber(int SenderId);
-   public List<RecommendationEntity> findByReceiverUserNumber(int receiverId);
+   public List<RecommendationEntity> findBySenderUserNumber(Integer SenderId);
+   public List<RecommendationEntity> findByReceiverUserNumber(Integer receiverId);
 
 }
